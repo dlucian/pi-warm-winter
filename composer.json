@@ -2,9 +2,12 @@
     "name": "monitive/pi-warm-winter",
     "version": "1.0.0",
     "autoload": {
-        "psr-4": {"Acme\\": "src/"}
+        "psr-4": {"Warmer\\": "src/"}
     },
     "require": {
         "ronanguilloux/php-gpio": "^1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.7"
     }
 }
