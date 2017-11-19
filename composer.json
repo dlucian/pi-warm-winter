@@ -8,6 +8,5 @@
         "ronanguilloux/php-gpio": "^1.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^5.7"
     }
 }

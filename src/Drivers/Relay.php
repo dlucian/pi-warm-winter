@@ -1,6 +1,8 @@
 <?php
 
-require '../vendor/autoload.php';
+require '../../vendor/autoload.php';
+
+//namespace Warmer\Drivers;
 
 use PhpGpio\Gpio;
 
@@ -27,3 +29,4 @@ while (0) {
 
 echo "Unexporting all pins\n";
 $gpio->unexportAll();
+

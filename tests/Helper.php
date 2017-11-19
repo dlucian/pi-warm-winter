@@ -1,6 +1,7 @@
 <?php
 
 use Warmer\Warmer;
+use Warmer\Interfaces\SensorInterface;
 
 class HeatingDevice 
 {
@@ -15,7 +16,7 @@ class HeatingDevice
     }   
 }
 
-class SensorShield
+class SensorShield implements SensorInterface
 {
     protected $values = array();
     
@@ -43,7 +44,7 @@ class DisplayDevice
     }
 }
 
-class TemperatureSensor
+class TemperatureSensor implements SensorInterface
 {
     public function read($sensor) {
         switch ($sensor) {
