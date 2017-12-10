@@ -51,9 +51,8 @@ static void flashy(tm1638_p t);
 
 int main(int argc, char *argv[])
 {
-  int aflag = 0;
-  int bflag = 0;
   char *ledText = NULL;
+  int leds = -1;
   int index;
   int c;
 
@@ -62,17 +61,14 @@ int main(int argc, char *argv[])
   while ((c = getopt (argc, argv, "l:d:")) != -1)
     switch (c)
       {
-      case 'a':
-        aflag = 1;
-        break;
-      case 'b':
-        bflag = 1;
-        break;
-      case 'l':
+      case 'd':
         ledText = optarg;
         break;
+      case 'l':
+        leds = atoi(optarg);
+        break;
       case '?':
-        if (optopt == 'c')
+        if (optopt == 'l' || optopt == 'd')
           fprintf (stderr, "Option -%c requires an argument.\n", optopt);
         else if (isprint (optopt))
           fprintf (stderr, "Unknown option `-%c'.\n", optopt);
@@ -85,23 +81,14 @@ int main(int argc, char *argv[])
         abort ();
       }
 
-  printf ("aflag = %d, bflag = %d, ledText = %s\n",
-          aflag, bflag, ledText);
-
   for (index = optind; index < argc; index++)
     printf ("Non-option argument %s\n", argv[index]);
-  return 0;
 
-
-
-
-
-
-
-
-
-  printf ("Bazinga!\n");
-  return(0);
+  if (! ledText && leds < 0) 
+    {
+      printf ("Options: -l NUMBER -d TEXT\n");
+      abort ();
+    }
 
   tm1638_p t;
 
@@ -118,84 +105,23 @@ int main(int argc, char *argv[])
       return -2;
     }
 
-// while(1) {
+  if (ledText)
+    {
+      printf("Set LED Text: %s\n", ledText);
+      // the third parameter is a binary where to set the digit dots
+      tm1638_set_7seg_text(t, ledText, 0b01000100);
+    }
 
-  // ********************************************
-  tm1638_set_7seg_text(t, "-135  28", 0b01000100);
-  tm1638_set_8leds(t, 0b01100010, 0);
-  delay(3000);
+  if (leds >= 0)
+    {
+      printf("Set LEDs: %d\n", leds);
+      tm1638_set_8leds(t, leds, 0);
+    }
 
-  tm1638_set_7seg_text(t, "-135- 11", 0b01000100);
-  tm1638_set_8leds(t, 0b01100001, 0);
-  delay(3000);
-  // ********************************************
-
-//}
-  //tm1638_set_7seg_raw(t, 2, 0b10000000);
-  /*delay(5000);
-
-  tm1638_send_cls(t);
-
-  knight_rider(t,2);
-
-  tm1638_send_cls(t);
-
-  flashy(t);
-
-  tm1638_send_cls(t);
-
-  knight_rider(t,2);
-
-  tm1638_send_cls(t);
-
-  tm1638_set_7seg_text(t, "Goodbye!", 0x00);
-*/
+  // tm1638_send_cls(t); // this will erase everything
   tm1638_free(&t);
 
   return 0;
-}
-
-static void knight_rider(tm1638_p t, int n)
-{
-  for(int i = 0; i < n; i++)
-    {
-      for(int j = 0; j < 8; j++)
-	{
-	  uint8_t m = 128 >> j;
-	  tm1638_set_8leds(t, m, 0);
-	  tm1638_set_7seg_text(t, "", m);
-	  delay(25);
-	}
-
-      for(int j = 0; j < 8; j++)
-	{
-	  uint8_t m = 1 << j;
-	  tm1638_set_8leds(t, m, 0);
-	  tm1638_set_7seg_text(t, "", m);
-	  delay(25);
-	}
-    }
-}
-
-static void flashy(tm1638_p t)
-{
-  uint8_t green = 0;
-
-  for(int i = 0; i < 8; i++)
-    {
-      uint8_t mask = (128 >> i);
-
-      tm1638_set_8leds(t, mask, green);
-
-      for(int j = 0; j < 8; j++)
-	{
-	  tm1638_set_7seg_raw(t, i, (1 << j));
-	  delay(50);
-	}
-
-      green |= mask;
-      tm1638_set_8leds(t, 0, green);
-    }
 }
 
 /** @endcond */
