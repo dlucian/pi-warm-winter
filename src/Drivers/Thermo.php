@@ -1,6 +1,6 @@
 <?php
 
-require_once "../../vendor/autoload.php";
+namespace Warmer\Drivers;
 
 use Warmer\Interfaces\SensorInterface;
 use PhpGpio\Gpio;

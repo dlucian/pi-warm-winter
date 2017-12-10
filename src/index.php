@@ -3,15 +3,21 @@
 require_once(dirname(__FILE__) . '/../vendor/autoload.php');
 
 use Warmer\Warmer;
+use Warmer\Drivers\Thermo;
+use Warmer\Drivers\Display;
 
 $warmer = new Warmer();
 
-$thermo = new Thermo();
-echo sprintf("THERMO %f %f, $thermo->read(0), $thermo->read(1));
-
 //connect thermo driver
+$thermo = new Thermo();
+echo sprintf("THERMO %f %f\n", $thermo->read(0), $thermo->read(1));
 //connect push driver
 //connect display driver
+$display = new Display();
+while(true) {
+$display->show($thermo->read(0), $thermo->read(1));
+}
+
 //connect relay(heater) driver
 //turn off heaters
 //display hello
@@ -26,3 +32,5 @@ echo sprintf("THERMO %f %f, $thermo->read(0), $thermo->read(1));
 //---- if room1..3 temp > 4.9 deg turn off heater & set LED (1st group)
 //---- sleep 10 seconds, room++
 //
+
+
