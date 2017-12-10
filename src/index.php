@@ -6,6 +6,9 @@ use Warmer\Warmer;
 
 $warmer = new Warmer();
 
+$thermo = new Thermo();
+echo sprintf("THERMO %f %f, $thermo->read(0), $thermo->read(1));
+
 //connect thermo driver
 //connect push driver
 //connect display driver
