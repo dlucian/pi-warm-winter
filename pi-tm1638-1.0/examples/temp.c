@@ -1,6 +1,6 @@
 /**
  *
- * @file 
+ * @file
  * @brief   Hello World for TM1638 based displays
  * @author  Martin Oldfield <ex-tm1638@mjo.tc>
  * @version 0.1
@@ -34,6 +34,9 @@
 
 /** @cond NEVER */
 
+#include <ctype.h>
+#include <unistd.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -48,6 +51,58 @@ static void flashy(tm1638_p t);
 
 int main(int argc, char *argv[])
 {
+  int aflag = 0;
+  int bflag = 0;
+  char *ledText = NULL;
+  int index;
+  int c;
+
+  opterr = 0;
+
+  while ((c = getopt (argc, argv, "l:d:")) != -1)
+    switch (c)
+      {
+      case 'a':
+        aflag = 1;
+        break;
+      case 'b':
+        bflag = 1;
+        break;
+      case 'l':
+        ledText = optarg;
+        break;
+      case '?':
+        if (optopt == 'c')
+          fprintf (stderr, "Option -%c requires an argument.\n", optopt);
+        else if (isprint (optopt))
+          fprintf (stderr, "Unknown option `-%c'.\n", optopt);
+        else
+          fprintf (stderr,
+                   "Unknown option character `\\x%x'.\n",
+                   optopt);
+        return 1;
+      default:
+        abort ();
+      }
+
+  printf ("aflag = %d, bflag = %d, ledText = %s\n",
+          aflag, bflag, ledText);
+
+  for (index = optind; index < argc; index++)
+    printf ("Non-option argument %s\n", argv[index]);
+  return 0;
+
+
+
+
+
+
+
+
+
+  printf ("Bazinga!\n");
+  return(0);
+
   tm1638_p t;
 
   if (!bcm2835_init())
@@ -63,7 +118,9 @@ int main(int argc, char *argv[])
       return -2;
     }
 
-while(1) {
+// while(1) {
+
+  // ********************************************
   tm1638_set_7seg_text(t, "-135  28", 0b01000100);
   tm1638_set_8leds(t, 0b01100010, 0);
   delay(3000);
@@ -71,7 +128,9 @@ while(1) {
   tm1638_set_7seg_text(t, "-135- 11", 0b01000100);
   tm1638_set_8leds(t, 0b01100001, 0);
   delay(3000);
-}
+  // ********************************************
+
+//}
   //tm1638_set_7seg_raw(t, 2, 0b10000000);
   /*delay(5000);
 
@@ -127,13 +186,13 @@ static void flashy(tm1638_p t)
       uint8_t mask = (128 >> i);
 
       tm1638_set_8leds(t, mask, green);
-      
+
       for(int j = 0; j < 8; j++)
 	{
 	  tm1638_set_7seg_raw(t, i, (1 << j));
 	  delay(50);
 	}
-      
+
       green |= mask;
       tm1638_set_8leds(t, 0, green);
     }
